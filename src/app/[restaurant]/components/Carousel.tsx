@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, ReactNode } from "react";
+import { useRef, ReactNode, useState, useEffect } from "react";
 
 interface CarouselProps {
   children: ReactNode;
@@ -14,6 +14,25 @@ export default function Carousel({
   className = "",
 }: CarouselProps) {
   const carouselRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const updateScrollButtons = () => {
+    if (carouselRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
+    }
+  };
+
+  useEffect(() => {
+    updateScrollButtons();
+    const carousel = carouselRef.current;
+    if (carousel) {
+      carousel.addEventListener("scroll", updateScrollButtons);
+      return () => carousel.removeEventListener("scroll", updateScrollButtons);
+    }
+  }, []);
 
   const scrollLeft = () => {
     if (carouselRef.current) {
@@ -34,51 +53,56 @@ export default function Carousel({
   };
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative group ${className}`}>
       {/* Botão Esquerda */}
-      <button
-        onClick={scrollLeft}
-        className="absolute left-1 top-1/2 -translate-y-1/2 z-10 bg-white/95 hover:bg-white shadow-xl hover:shadow-2xl rounded-full p-3 carousel-nav-btn border border-purple-200 hover:border-purple-400"
-      >
-        <svg
-          className="w-6 h-6 text-purple-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+      {canScrollLeft && (
+        <button
+          onClick={scrollLeft}
+          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-white/95 hover:bg-white shadow-lg hover:shadow-xl rounded-full p-2.5 transition-all duration-300 border border-purple-200 hover:border-purple-400 opacity-0 group-hover:opacity-100"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-      </button>
+          <svg
+            className="w-5 h-5 text-purple-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
+      )}
 
       {/* Botão Direita */}
-      <button
-        onClick={scrollRight}
-        className="absolute right-1 top-1/2 -translate-y-1/2 z-10 bg-white/95 hover:bg-white shadow-xl hover:shadow-2xl rounded-full p-3 carousel-nav-btn border border-purple-200 hover:border-purple-400"
-      >
-        <svg
-          className="w-6 h-6 text-purple-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+      {canScrollRight && (
+        <button
+          onClick={scrollRight}
+          className="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-white/95 hover:bg-white shadow-lg hover:shadow-xl rounded-full p-2.5 transition-all duration-300 border border-purple-200 hover:border-purple-400 opacity-0 group-hover:opacity-100"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5l7 7-7 7"
-          />
-        </svg>
-      </button>
+          <svg
+            className="w-5 h-5 text-purple-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </button>
+      )}
 
       {/* Container do carrossel */}
       <div
         ref={carouselRef}
-        className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide scroll-smooth px-12"
+        className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide scroll-smooth px-4 snap-x snap-mandatory"
+        style={{ scrollPaddingLeft: "1rem", scrollPaddingRight: "1rem" }}
       >
         {children}
       </div>

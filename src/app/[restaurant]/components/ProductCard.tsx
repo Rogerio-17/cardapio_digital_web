@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Product } from "../types";
+import { useCart } from "../context/CartContext";
 
 interface ProductCardProps {
   product: Product;
@@ -14,11 +15,18 @@ export default function ProductCard({
   isFeatured = false,
   className = "",
 }: ProductCardProps) {
+  const { addItem } = useCart();
   const baseClasses =
-    "group bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-purple-100/50";
+    "group bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 border border-purple-100/50 flex-shrink-0 snap-start";
+
+  const cardWidth = isFeatured ? "w-80" : "w-72";
+
+  const handleAddToCart = () => {
+    addItem(product);
+  };
 
   return (
-    <div className={`${baseClasses} ${className}`}>
+    <div className={`${baseClasses} ${cardWidth} ${className}`}>
       <div className="relative h-48 overflow-hidden">
         <Image
           src={product.image}
@@ -62,6 +70,7 @@ export default function ProductCard({
         </p>
 
         <button
+          onClick={handleAddToCart}
           className={`w-full text-white font-semibold py-3.5 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] ${
             isFeatured
               ? "bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 hover:from-orange-600 hover:via-red-600 hover:to-pink-600"
