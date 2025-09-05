@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
+import QuickAddButton from "./QuickAddButton";
 
 interface Product {
   id: string;
@@ -141,14 +142,20 @@ export default function Menu({ categories, products }: MenuProps) {
                 </p>
               </div>
 
-              {/* Imagem do produto (lado direito) */}
-              <div className="relative w-20 h-20 md:w-24 md:h-24 flex-shrink-0">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  className="object-cover rounded-lg"
-                />
+              {/* Lado direito com imagem e botão */}
+              <div className="flex items-center space-x-3">
+                {/* Imagem do produto */}
+                <div className="relative w-20 h-20 md:w-24 md:h-24 flex-shrink-0">
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    className="object-cover rounded-lg"
+                  />
+                </div>
+
+                {/* Botão de adicionar rápido */}
+                <QuickAddButton product={product} />
               </div>
             </div>
           ))}

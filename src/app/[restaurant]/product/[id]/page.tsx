@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ArrowLeft, Plus, Minus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/contexts/CartContext";
 
 interface ProductDetailPageProps {
   params: {
@@ -31,6 +32,7 @@ interface Product {
 
 export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const router = useRouter();
+  const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [selectedAdditionals, setSelectedAdditionals] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
@@ -133,25 +135,38 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   };
 
   const handleAddToCart = () => {
-    // Aqui você implementaria a lógica para adicionar ao carrinho
-    console.log("Produto adicionado ao carrinho:", {
-      product,
+    const selectedAdditionalsData = selectedAdditionals
+      .map((id) => product.additionals?.find((add) => add.id === id))
+      .filter(Boolean) as Additional[];
+
+    const totalPrice = calculateTotalPrice();
+
+    addItem({
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
       quantity,
-      selectedAdditionals,
-      notes,
-      totalPrice: calculateTotalPrice(),
+      additionals: selectedAdditionalsData,
+      notes: notes.trim() || undefined,
+      totalPrice,
     });
 
-    // Mostrar feedback visual ou redirecionar
-    alert("Produto adicionado ao carrinho!");
-  };
+    // Reset form
+    setQuantity(1);
+    setSelectedAdditionals([]);
+    setNotes("");
 
+    // Mostrar feedback visual
+    // Aqui você pode adicionar um toast ou notificação
+    console.log("Produto adicionado ao carrinho!");
+  };
   const handleProductClick = (productId: string) => {
     router.push(`/${params.restaurant}/product/${productId}`);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-24">
       {/* Header */}
       <div className="bg-white shadow-sm">
         <div className="flex items-center justify-between p-4">
@@ -325,9 +340,6 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
           ))}
         </div>
       </div>
-
-      {/* Espaçamento inferior */}
-      <div className="h-8" />
     </div>
   );
 }

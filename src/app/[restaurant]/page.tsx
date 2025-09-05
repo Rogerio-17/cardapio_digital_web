@@ -163,7 +163,7 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-24">
       {/* Header com capa e informações */}
       <div>
         <RestaurantCover coverImage={restaurantData.coverImage} />
