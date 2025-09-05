@@ -87,23 +87,32 @@ export default function ProductDetailClient({
     {
       id: "2",
       name: "Pizza Calabresa",
+      description:
+        "Deliciosa pizza com calabresa artesanal, cebola roxa e azeitonas pretas",
       price: 35.9,
       image:
         "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=200&h=200&fit=crop",
+      categoryId: "1",
     },
     {
       id: "3",
       name: "Pizza Quatro Queijos",
+      description:
+        "Combinação perfeita de mussarela, gorgonzola, parmesão e provolone",
       price: 39.9,
       image:
         "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200&h=200&fit=crop",
+      categoryId: "1",
     },
     {
       id: "4",
       name: "Pizza Portuguesa",
+      description:
+        "Pizza tradicional com presunto, ovos, cebola, azeitonas e ervilha",
       price: 42.9,
       image:
         "https://images.unsplash.com/photo-1555072956-7758afb4d7a6?w=200&h=200&fit=crop",
+      categoryId: "1",
     },
   ];
 
@@ -250,28 +259,39 @@ export default function ProductDetailClient({
           <h2 className="text-lg font-semibold text-gray-800 mb-4">
             Você também pode gostar
           </h2>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-4">
             {relatedProducts.map((relatedProduct) => (
-              <button
+              <div
                 key={relatedProduct.id}
+                className="bg-white rounded-lg shadow-sm p-4 flex justify-between items-center hover:shadow-md transition-shadow cursor-pointer border border-gray-100"
                 onClick={() => handleProductClick(relatedProduct.id)}
-                className="text-left p-3 border border-gray-200 rounded-lg hover:border-orange-500 transition-colors"
               >
-                <div className="relative w-full h-24 mb-2">
-                  <Image
-                    src={relatedProduct.image}
-                    alt={relatedProduct.name}
-                    fill
-                    className="object-cover rounded"
-                  />
+                {/* Informações do produto (lado esquerdo) */}
+                <div className="flex-1 mr-4">
+                  <h4 className="text-lg font-semibold text-gray-800 mb-1">
+                    {relatedProduct.name}
+                  </h4>
+                  <p className="text-gray-600 text-sm mb-3 leading-relaxed">
+                    {relatedProduct.description}
+                  </p>
+                  <p className="text-xl font-bold text-green-600">
+                    R$ {relatedProduct.price.toFixed(2).replace(".", ",")}
+                  </p>
                 </div>
-                <h3 className="font-medium text-gray-800 text-sm truncate">
-                  {relatedProduct.name}
-                </h3>
-                <p className="text-green-600 font-semibold text-sm">
-                  R$ {relatedProduct.price.toFixed(2).replace(".", ",")}
-                </p>
-              </button>
+
+                {/* Lado direito com imagem */}
+                <div className="flex items-center">
+                  {/* Imagem do produto */}
+                  <div className="relative w-20 h-20 md:w-24 md:h-24 flex-shrink-0">
+                    <Image
+                      src={relatedProduct.image}
+                      alt={relatedProduct.name}
+                      fill
+                      className="object-cover rounded-lg"
+                    />
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
