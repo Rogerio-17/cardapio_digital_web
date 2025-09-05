@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter, useParams } from "next/navigation";
 
 interface Product {
   id: string;
@@ -25,6 +26,12 @@ interface MenuProps {
 
 export default function Menu({ categories, products }: MenuProps) {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("all");
+  const router = useRouter();
+  const params = useParams();
+
+  const handleProductClick = (productId: string) => {
+    router.push(`/${params.restaurant}/product/${productId}`);
+  };
 
   // Adicionar categoria "Todas as categorias" no início
   const allCategories = [
@@ -119,6 +126,7 @@ export default function Menu({ categories, products }: MenuProps) {
             <div
               key={product.id}
               className="bg-white rounded-lg shadow-sm p-4 flex justify-between items-center hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => handleProductClick(product.id)}
             >
               {/* Informações do produto (lado esquerdo) */}
               <div className="flex-1 mr-4">
