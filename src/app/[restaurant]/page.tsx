@@ -3,12 +3,13 @@ import RestaurantInfo from "@/components/RestaurantInfo";
 import Menu from "@/components/Menu";
 
 interface RestaurantPageProps {
-  params: {
+  params: Promise<{
     restaurant: string;
-  };
+  }>;
 }
 
-export default function RestaurantPage({ params }: RestaurantPageProps) {
+export default async function RestaurantPage({ params }: RestaurantPageProps) {
+  const { restaurant } = await params;
   // Dados exemplo - posteriormente serão carregados dinamicamente
   const restaurantData = {
     name: "Holy Pizza",

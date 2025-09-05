@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import {
   ShoppingCart,
   Plus,
@@ -13,6 +14,8 @@ import Image from "next/image";
 import { useCart } from "@/contexts/CartContext";
 
 export default function FloatingCart() {
+  const router = useRouter();
+  const pathname = usePathname();
   const {
     items,
     getTotalItems,
@@ -23,11 +26,44 @@ export default function FloatingCart() {
     setIsOpen,
   } = useCart();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [shouldShow, setShouldShow] = useState(true);
 
   const totalItems = getTotalItems();
   const totalPrice = getTotalPrice();
 
-  if (totalItems === 0) {
+  // Verificar se deve mostrar o carrinho baseado na URL atual
+  useEffect(() => {
+    // Ocultar carrinho em:
+    // - Tela inicial (apenas "/")
+    // - Páginas de checkout ("/[restaurant]/checkout")
+    // - Página de pedido confirmado ("/pedido-confirmado")
+    const hideOnRoutes = ["/", "/checkout", "/pedido-confirmado"];
+
+    const isCheckoutPage = pathname.includes("/checkout");
+    const isHomePage = pathname === "/";
+    const isConfirmationPage = pathname.includes("/pedido-confirmado");
+
+    setShouldShow(!isCheckoutPage && !isHomePage && !isConfirmationPage);
+  }, [pathname]);
+
+  const handleFinalizarPedido = () => {
+    // Obter o pathname atual para extrair o nome do restaurante
+    const pathname = window.location.pathname;
+    const restaurantMatch = pathname.match(/^\/([^\/]+)/);
+    const restaurantName = restaurantMatch ? restaurantMatch[1] : "";
+
+    // Construir a URL do checkout mantendo os parâmetros da URL atual
+    const currentUrl = new URL(window.location.href);
+    const searchParams = currentUrl.searchParams.toString();
+    const checkoutUrl = `/${restaurantName}/checkout${
+      searchParams ? `?${searchParams}` : ""
+    }`;
+
+    router.push(checkoutUrl);
+  };
+
+  // Não mostrar o carrinho se estiver em páginas específicas ou se estiver vazio
+  if (totalItems === 0 || !shouldShow) {
     return null;
   }
 
@@ -133,7 +169,10 @@ export default function FloatingCart() {
                 R$ {totalPrice.toFixed(2).replace(".", ",")}
               </span>
             </div>
-            <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition-colors">
+            <button
+              onClick={handleFinalizarPedido}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition-colors"
+            >
               Finalizar Pedido
             </button>
           </div>
