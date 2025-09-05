@@ -46,6 +46,9 @@ export default function FloatingCart() {
     setShouldShow(!isCheckoutPage && !isHomePage && !isConfirmationPage);
   }, [pathname]);
 
+  // Verificar se está na página de detalhes do produto
+  const isProductDetailPage = pathname.includes("/product/");
+
   const handleFinalizarPedido = () => {
     // Obter o pathname atual para extrair o nome do restaurante
     const pathname = window.location.pathname;
@@ -68,7 +71,11 @@ export default function FloatingCart() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50">
+    <div
+      className={`fixed left-0 right-0 z-40 ${
+        isProductDetailPage ? "bottom-20" : "bottom-0"
+      }`}
+    >
       {/* Carrinho expandido */}
       {isExpanded && (
         <div className="bg-white rounded-t-3xl shadow-2xl max-h-[70vh] overflow-hidden">

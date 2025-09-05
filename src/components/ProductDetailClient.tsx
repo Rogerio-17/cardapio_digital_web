@@ -246,7 +246,7 @@ export default function ProductDetailClient({
         </div>
 
         {/* Produtos relacionados */}
-        <div className="bg-white rounded-lg p-4 shadow-sm">
+        <div className="bg-white rounded-lg p-4 mb-16 shadow-sm">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">
             Você também pode gostar
           </h2>
@@ -277,8 +277,8 @@ export default function ProductDetailClient({
         </div>
       </div>
 
-      {/* Footer fixo */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+      {/* Footer fixo - botão de adicionar na parte inferior */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50 shadow-lg">
         <div className="max-w-md mx-auto flex items-center space-x-4">
           {/* Controle de quantidade */}
           <div className="flex items-center space-x-2">
@@ -302,7 +302,7 @@ export default function ProductDetailClient({
           {/* Botão adicionar */}
           <button
             onClick={handleAddToCart}
-            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center"
+            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center shadow-md"
           >
             Adicionar • R$ {calculateTotalPrice().toFixed(2).replace(".", ",")}
           </button>
