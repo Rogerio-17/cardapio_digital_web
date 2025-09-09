@@ -5,10 +5,10 @@ import {
   Car,
   Store,
   Home,
-  MapPin,
-  Navigation,
   Clock,
   AlertCircle,
+  MapPin,
+  Plus,
 } from "lucide-react";
 
 interface Address {
@@ -18,8 +18,12 @@ interface Address {
   neighborhood: string;
   city: string;
   zipCode: string;
-  latitude?: number;
-  longitude?: number;
+  state: string;
+}
+
+interface SavedAddress extends Address {
+  id: string;
+  label: string;
 }
 
 interface DeliveryInfo {
@@ -42,8 +46,37 @@ export default function DeliveryTypeStep({
   setEstimatedTime,
 }: DeliveryTypeStepProps) {
   const [showAddressForm, setShowAddressForm] = useState(false);
-  const [locationRequested, setLocationRequested] = useState(false);
-  const [locationDenied, setLocationDenied] = useState(false);
+  const [showNewAddressForm, setShowNewAddressForm] = useState(false);
+  const [isLoadingCep, setIsLoadingCep] = useState(false);
+  const [cepError, setCepError] = useState("");
+
+  // Endereços salvos simulados - em um app real, viria do backend
+  // Para testar sem endereços salvos, deixe o array vazio: []
+  // Para testar com endereços salvos, descomente as linhas abaixo:
+  const [savedAddresses] = useState<SavedAddress[]>([
+    {
+      id: "1",
+      label: "Casa",
+      street: "Rua das Flores",
+      number: "123",
+      complement: "Apto 45",
+      neighborhood: "Centro",
+      city: "São Paulo",
+      state: "SP",
+      zipCode: "01234-567",
+    },
+    {
+      id: "2",
+      label: "Trabalho",
+      street: "Avenida Paulista",
+      number: "1000",
+      complement: "Sala 101",
+      neighborhood: "Bela Vista",
+      city: "São Paulo",
+      state: "SP",
+      zipCode: "01310-100",
+    },
+  ]);
 
   const deliveryOptions = [
     {
@@ -87,70 +120,114 @@ export default function DeliveryTypeStep({
     } else if (type === "dine-in") {
       setDeliveryInfo({ type, tableNumber: tableNumber || undefined });
       setShowAddressForm(false);
+      setShowNewAddressForm(false);
     } else {
       setDeliveryInfo({ type });
       setShowAddressForm(false);
+      setShowNewAddressForm(false);
     }
   };
 
-  const requestLocation = async () => {
-    setLocationRequested(true);
+  const fetchAddressByCep = async (cep: string) => {
+    const cleanCep = cep.replace(/\D/g, "");
 
-    if (!navigator.geolocation) {
-      setLocationDenied(true);
-      setLocationRequested(false);
+    if (cleanCep.length !== 8) {
+      setCepError("CEP deve ter 8 dígitos");
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
+    setIsLoadingCep(true);
+    setCepError("");
 
-        try {
-          // Aqui você pode fazer uma chamada para uma API de geocodificação reversa
-          // Por exemplo, usando a API do Google Maps ou OpenStreetMap
-          const address: Address = {
-            street: "Rua obtida via GPS",
-            number: "123",
-            neighborhood: "Bairro obtido via GPS",
-            city: "Cidade obtida via GPS",
-            zipCode: "00000-000",
-            latitude,
-            longitude,
-          };
+    try {
+      const response = await fetch(
+        `https://viacep.com.br/ws/${cleanCep}/json/`
+      );
+      const data = await response.json();
 
-          setDeliveryInfo({
-            ...deliveryInfo,
-            address,
-          });
-          setLocationRequested(false);
-        } catch (error) {
-          console.error("Erro ao obter endereço:", error);
-          setLocationDenied(true);
-          setLocationRequested(false);
-        }
-      },
-      () => {
-        setLocationDenied(true);
-        setLocationRequested(false);
+      if (data.erro) {
+        setCepError("CEP não encontrado");
+        setIsLoadingCep(false);
+        return;
       }
-    );
+
+      const address: Address = {
+        street: data.logradouro || "",
+        number: "",
+        complement: "",
+        neighborhood: data.bairro || "",
+        city: data.localidade || "",
+        state: data.uf || "",
+        zipCode: cleanCep,
+      };
+
+      setDeliveryInfo({
+        ...deliveryInfo,
+        address,
+      });
+      setIsLoadingCep(false);
+    } catch (error) {
+      console.error("Erro ao buscar CEP:", error);
+      setCepError("Erro ao buscar CEP");
+      setIsLoadingCep(false);
+    }
   };
 
   const handleAddressChange = (field: keyof Address, value: string) => {
     const currentAddress = deliveryInfo.address || {
       street: "",
       number: "",
+      complement: "",
       neighborhood: "",
       city: "",
+      state: "",
       zipCode: "",
+    };
+
+    const updatedAddress = {
+      ...currentAddress,
+      [field]: value,
     };
 
     setDeliveryInfo({
       ...deliveryInfo,
+      address: updatedAddress,
+    });
+
+    // Se o campo alterado for o CEP, buscar endereço automaticamente
+    if (field === "zipCode" && value.length >= 8) {
+      fetchAddressByCep(value);
+    }
+  };
+
+  const handleSelectSavedAddress = (address: SavedAddress) => {
+    setDeliveryInfo({
+      ...deliveryInfo,
       address: {
-        ...currentAddress,
-        [field]: value,
+        street: address.street,
+        number: address.number,
+        complement: address.complement,
+        neighborhood: address.neighborhood,
+        city: address.city,
+        state: address.state,
+        zipCode: address.zipCode,
+      },
+    });
+    setShowNewAddressForm(false);
+  };
+
+  const handleAddNewAddress = () => {
+    setShowNewAddressForm(true);
+    setDeliveryInfo({
+      ...deliveryInfo,
+      address: {
+        street: "",
+        number: "",
+        complement: "",
+        neighborhood: "",
+        city: "",
+        state: "",
+        zipCode: "",
       },
     });
   };
@@ -216,94 +293,186 @@ export default function DeliveryTypeStep({
         })}
       </div>
 
-      {/* Formulário de endereço para entrega */}
+      {/* Seleção de endereço para entrega */}
       {showAddressForm && deliveryInfo.type === "delivery" && (
         <div className="bg-gray-50 rounded-lg p-4 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-gray-800">Endereço de Entrega</h3>
-            <button
-              onClick={requestLocation}
-              disabled={locationRequested}
-              className="flex items-center space-x-2 text-orange-500 hover:text-orange-600 text-sm font-medium disabled:opacity-50"
-            >
-              <Navigation size={16} />
-              <span>{locationRequested ? "Obtendo..." : "Usar GPS"}</span>
-            </button>
-          </div>
+          <h3 className="font-semibold text-gray-800">Endereço de Entrega</h3>
 
-          {locationDenied && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 flex items-start space-x-2">
-              <AlertCircle size={16} className="text-yellow-600 mt-0.5" />
-              <p className="text-sm text-yellow-800">
-                Não foi possível obter sua localização. Preencha o endereço
-                manualmente.
+          {/* Endereços salvos */}
+          {savedAddresses.length > 0 && !showNewAddressForm && (
+            <div className="space-y-3">
+              <p className="text-sm text-gray-600">
+                Escolha um endereço salvo:
               </p>
+              {savedAddresses.map((address) => (
+                <button
+                  key={address.id}
+                  onClick={() => handleSelectSavedAddress(address)}
+                  className="w-full p-3 text-left border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors"
+                >
+                  <div className="flex items-start space-x-3">
+                    <MapPin size={16} className="text-gray-500 mt-1" />
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-800">
+                        {address.label}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {address.street}, {address.number}
+                        {address.complement && `, ${address.complement}`}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {address.neighborhood} - {address.city}/{address.state}
+                      </p>
+                      <p className="text-sm text-gray-500">{address.zipCode}</p>
+                    </div>
+                  </div>
+                </button>
+              ))}
+
+              <button
+                onClick={handleAddNewAddress}
+                className="w-full p-3 text-left border-2 border-dashed border-gray-300 rounded-lg hover:border-orange-400 hover:bg-orange-50 transition-colors"
+              >
+                <div className="flex items-center justify-center space-x-2 text-gray-600">
+                  <Plus size={20} />
+                  <span>Enviar para outro endereço</span>
+                </div>
+              </button>
             </div>
           )}
 
-          <div className="grid grid-cols-1 gap-4">
-            <div className="grid grid-cols-3 gap-2">
-              <div className="col-span-2">
-                <input
-                  type="text"
-                  placeholder="Rua / Avenida"
-                  value={deliveryInfo.address?.street || ""}
-                  onChange={(e) =>
-                    handleAddressChange("street", e.target.value)
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                />
-              </div>
-              <div>
-                <input
-                  type="text"
-                  placeholder="Número"
-                  value={deliveryInfo.address?.number || ""}
-                  onChange={(e) =>
-                    handleAddressChange("number", e.target.value)
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                />
-              </div>
+          {/* Formulário para novo endereço */}
+          {(savedAddresses.length === 0 || showNewAddressForm) && (
+            <div className="space-y-4">
+              {savedAddresses.length > 0 && (
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-600">Novo endereço:</p>
+                  <button
+                    onClick={() => setShowNewAddressForm(false)}
+                    className="text-sm text-orange-500 hover:text-orange-600"
+                  >
+                    Voltar
+                  </button>
+                </div>
+              )}
+
+              {savedAddresses.length === 0 && (
+                <button
+                  onClick={handleAddNewAddress}
+                  className="w-full p-3 text-left border-2 border-dashed border-gray-300 rounded-lg hover:border-orange-400 hover:bg-orange-50 transition-colors"
+                >
+                  <div className="flex items-center justify-center space-x-2 text-gray-600">
+                    <Plus size={20} />
+                    <span>Adicionar endereço</span>
+                  </div>
+                </button>
+              )}
+
+              {/* Formulário de endereço */}
+              {(showNewAddressForm || savedAddresses.length === 0) && (
+                <div className="grid grid-cols-1 gap-4">
+                  {/* Campo CEP no início */}
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="CEP (ex: 12345-678)"
+                      value={deliveryInfo.address?.zipCode || ""}
+                      onChange={(e) => {
+                        const value = e.target.value
+                          .replace(/\D/g, "")
+                          .slice(0, 8);
+                        const formattedValue = value.replace(
+                          /(\d{5})(\d{3})/,
+                          "$1-$2"
+                        );
+                        handleAddressChange("zipCode", formattedValue);
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      disabled={isLoadingCep}
+                    />
+                    {isLoadingCep && (
+                      <p className="text-sm text-blue-600 mt-1">
+                        Buscando endereço...
+                      </p>
+                    )}
+                    {cepError && (
+                      <p className="text-sm text-red-600 mt-1">{cepError}</p>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="col-span-2">
+                      <input
+                        type="text"
+                        placeholder="Rua / Avenida"
+                        value={deliveryInfo.address?.street || ""}
+                        onChange={(e) =>
+                          handleAddressChange("street", e.target.value)
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        readOnly={isLoadingCep}
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Número"
+                        value={deliveryInfo.address?.number || ""}
+                        onChange={(e) =>
+                          handleAddressChange("number", e.target.value)
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      />
+                    </div>
+                  </div>
+
+                  <input
+                    type="text"
+                    placeholder="Complemento (opcional)"
+                    value={deliveryInfo.address?.complement || ""}
+                    onChange={(e) =>
+                      handleAddressChange("complement", e.target.value)
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  />
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      type="text"
+                      placeholder="Bairro"
+                      value={deliveryInfo.address?.neighborhood || ""}
+                      onChange={(e) =>
+                        handleAddressChange("neighborhood", e.target.value)
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      readOnly={isLoadingCep}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Estado"
+                      value={deliveryInfo.address?.state || ""}
+                      onChange={(e) =>
+                        handleAddressChange("state", e.target.value)
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      readOnly={isLoadingCep}
+                    />
+                  </div>
+
+                  <input
+                    type="text"
+                    placeholder="Cidade"
+                    value={deliveryInfo.address?.city || ""}
+                    onChange={(e) =>
+                      handleAddressChange("city", e.target.value)
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    readOnly={isLoadingCep}
+                  />
+                </div>
+              )}
             </div>
-
-            <input
-              type="text"
-              placeholder="Complemento (opcional)"
-              value={deliveryInfo.address?.complement || ""}
-              onChange={(e) =>
-                handleAddressChange("complement", e.target.value)
-              }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-            />
-
-            <div className="grid grid-cols-2 gap-2">
-              <input
-                type="text"
-                placeholder="Bairro"
-                value={deliveryInfo.address?.neighborhood || ""}
-                onChange={(e) =>
-                  handleAddressChange("neighborhood", e.target.value)
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-              />
-              <input
-                type="text"
-                placeholder="CEP"
-                value={deliveryInfo.address?.zipCode || ""}
-                onChange={(e) => handleAddressChange("zipCode", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-              />
-            </div>
-
-            <input
-              type="text"
-              placeholder="Cidade"
-              value={deliveryInfo.address?.city || ""}
-              onChange={(e) => handleAddressChange("city", e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-            />
-          </div>
+          )}
         </div>
       )}
 
