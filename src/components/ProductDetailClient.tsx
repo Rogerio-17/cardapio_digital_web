@@ -47,65 +47,84 @@ export default function ProductDetailClient({
   const [notes, setNotes] = useState("");
 
   // Dados exemplo - posteriormente serão carregados dinamicamente
-  const product: Product = {
-    id: productId,
-    name: "Pizza Margherita",
-    description:
-      "Deliciosa pizza margherita com molho de tomate artesanal, mussarela de primeira qualidade, manjericão fresco colhido na hora e azeite extra virgem. Uma combinação clássica italiana que conquistou o mundo todo.",
-    price: 32.9,
-    image:
-      "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600&h=400&fit=crop",
-    categoryId: "1",
-    sizes: [
-      {
-        id: "p",
-        name: "P",
-        price: 24.0,
-      },
-      {
-        id: "m",
-        name: "M",
-        price: 32.0,
-      },
-      {
-        id: "g",
-        name: "G",
-        price: 48.0,
-      },
-    ],
-    additionals: [
-      {
-        id: "1",
-        name: "Borda Recheada",
-        price: 8.0,
-        description: "Borda recheada com catupiry",
-      },
-      {
-        id: "2",
-        name: "Extra Queijo",
-        price: 5.0,
-        description: "Porção extra de mussarela",
-      },
-      {
-        id: "3",
-        name: "Manjericão Extra",
-        price: 2.0,
-        description: "Manjericão fresco adicional",
-      },
-      {
-        id: "4",
-        name: "Azeitonas",
-        price: 3.0,
-        description: "Azeitonas pretas fatiadas",
-      },
-      {
-        id: "5",
-        name: "Tomate Seco",
-        price: 4.0,
-        description: "Tomate seco italiano",
-      },
-    ],
+  const getProductData = (id: string): Product => {
+    if (id === "2") {
+      return {
+        id: productId,
+        name: "Coca-Cola 350ml",
+        description:
+          "Refrigerante Coca-Cola gelado de 350ml. A bebida mais refrescante e saborosa para acompanhar sua refeição.",
+        price: 5.50,
+        image:
+          "https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=600&h=400&fit=crop",
+        categoryId: "2",
+        // Sem tamanhos e sem adicionais para bebidas
+      };
+    }
+    
+    // Pizza padrão (ID 1 ou outros)
+    return {
+      id: productId,
+      name: "Pizza Margherita",
+      description:
+        "Deliciosa pizza margherita com molho de tomate artesanal, mussarela de primeira qualidade, manjericão fresco colhido na hora e azeite extra virgem. Uma combinação clássica italiana que conquistou o mundo todo.",
+      price: 32.9,
+      image:
+        "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600&h=400&fit=crop",
+      categoryId: "1",
+      sizes: [
+        {
+          id: "p",
+          name: "P",
+          price: 24.0,
+        },
+        {
+          id: "m",
+          name: "M",
+          price: 32.0,
+        },
+        {
+          id: "g",
+          name: "G",
+          price: 48.0,
+        },
+      ],
+      additionals: [
+        {
+          id: "1",
+          name: "Borda Recheada",
+          price: 8.0,
+          description: "Borda recheada com catupiry",
+        },
+        {
+          id: "2",
+          name: "Extra Queijo",
+          price: 5.0,
+          description: "Porção extra de mussarela",
+        },
+        {
+          id: "3",
+          name: "Manjericão Extra",
+          price: 2.0,
+          description: "Manjericão fresco adicional",
+        },
+        {
+          id: "4",
+          name: "Azeitonas",
+          price: 3.0,
+          description: "Azeitonas pretas fatiadas",
+        },
+        {
+          id: "5",
+          name: "Tomate Seco",
+          price: 4.0,
+          description: "Tomate seco italiano",
+        },
+      ],
+    };
   };
+
+  const product = getProductData(productId);
 
   // Definir tamanho padrão quando há tamanhos disponíveis
   useEffect(() => {
@@ -114,39 +133,7 @@ export default function ProductDetailClient({
     }
   }, [product.sizes, selectedSize]);
 
-  // Produtos relacionados exemplo
-  const relatedProducts = [
-    {
-      id: "2",
-      name: "Pizza Calabresa",
-      description:
-        "Deliciosa pizza com calabresa artesanal, cebola roxa e azeitonas pretas",
-      price: 35.9,
-      image:
-        "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=200&h=200&fit=crop",
-      categoryId: "1",
-    },
-    {
-      id: "3",
-      name: "Pizza Quatro Queijos",
-      description:
-        "Combinação perfeita de mussarela, gorgonzola, parmesão e provolone",
-      price: 39.9,
-      image:
-        "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200&h=200&fit=crop",
-      categoryId: "1",
-    },
-    {
-      id: "4",
-      name: "Pizza Portuguesa",
-      description:
-        "Pizza tradicional com presunto, ovos, cebola, azeitonas e ervilha",
-      price: 42.9,
-      image:
-        "https://images.unsplash.com/photo-1555072956-7758afb4d7a6?w=200&h=200&fit=crop",
-      categoryId: "1",
-    },
-  ];
+
 
   const calculateTotalPrice = () => {
     const additionalsPrice = selectedAdditionals.reduce(
@@ -202,10 +189,6 @@ export default function ProductDetailClient({
     console.log("Produto adicionado ao carrinho!");
   };
 
-  const handleProductClick = (productId: string) => {
-    router.push(`/${restaurant}/product/${productId}`);
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       {/* Header */}
@@ -228,7 +211,7 @@ export default function ProductDetailClient({
       </div>
 
       {/* Conteúdo */}
-      <div className="px-4 py-6 space-y-6">
+      <div className="px-4 py-6 pb-24 space-y-6">
         {/* Informações básicas */}
         <div>
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
@@ -330,47 +313,7 @@ export default function ProductDetailClient({
           />
         </div>
 
-        {/* Produtos relacionados */}
-        <div className="bg-white rounded-lg p-4 mb-16 shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
-            Você também pode gostar
-          </h2>
-          <div className="space-y-4">
-            {relatedProducts.map((relatedProduct) => (
-              <div
-                key={relatedProduct.id}
-                className="bg-white rounded-lg shadow-sm p-4 flex justify-between items-center hover:shadow-md transition-shadow cursor-pointer border border-gray-100"
-                onClick={() => handleProductClick(relatedProduct.id)}
-              >
-                {/* Informações do produto (lado esquerdo) */}
-                <div className="flex-1 mr-4">
-                  <h4 className="text-lg font-semibold text-gray-800 mb-1">
-                    {relatedProduct.name}
-                  </h4>
-                  <p className="text-gray-600 text-sm mb-3 leading-relaxed">
-                    {relatedProduct.description}
-                  </p>
-                  <p className="text-xl font-bold text-green-600">
-                    R$ {relatedProduct.price.toFixed(2).replace(".", ",")}
-                  </p>
-                </div>
 
-                {/* Lado direito com imagem */}
-                <div className="flex items-center">
-                  {/* Imagem do produto */}
-                  <div className="relative w-20 h-20 md:w-24 md:h-24 flex-shrink-0">
-                    <Image
-                      src={relatedProduct.image}
-                      alt={relatedProduct.name}
-                      fill
-                      className="object-cover rounded-lg"
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* Footer fixo - botão de adicionar na parte inferior */}
