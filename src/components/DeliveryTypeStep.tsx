@@ -304,30 +304,44 @@ export default function DeliveryTypeStep({
               <p className="text-sm text-gray-600">
                 Escolha um endereço salvo:
               </p>
-              {savedAddresses.map((address) => (
-                <button
-                  key={address.id}
-                  onClick={() => handleSelectSavedAddress(address)}
-                  className="w-full p-3 text-left border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors"
-                >
-                  <div className="flex items-start space-x-3">
-                    <MapPin size={16} className="text-gray-500 mt-1" />
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-800">
-                        {address.label}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {address.street}, {address.number}
-                        {address.complement && `, ${address.complement}`}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {address.neighborhood} - {address.city}/{address.state}
-                      </p>
-                      <p className="text-sm text-gray-500">{address.zipCode}</p>
+              {savedAddresses.map((address) => {
+                const isSelected =
+                  deliveryInfo.address?.street === address.street &&
+                  deliveryInfo.address?.number === address.number &&
+                  deliveryInfo.address?.zipCode === address.zipCode;
+
+                return (
+                  <button
+                    key={address.id}
+                    onClick={() => handleSelectSavedAddress(address)}
+                    className={`w-full p-3 text-left border rounded-lg transition-colors ${
+                      isSelected
+                        ? "border-orange-300 bg-orange-50"
+                        : "border-gray-200 hover:border-orange-300 hover:bg-orange-50"
+                    }`}
+                  >
+                    <div className="flex items-start space-x-3">
+                      <MapPin size={16} className="text-gray-500 mt-1" />
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-800">
+                          {address.label}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {address.street}, {address.number}
+                          {address.complement && `, ${address.complement}`}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {address.neighborhood} - {address.city}/
+                          {address.state}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {address.zipCode}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
 
               <button
                 onClick={handleAddNewAddress}
