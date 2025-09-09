@@ -21,6 +21,12 @@ interface Additional {
   description?: string;
 }
 
+interface ProductSize {
+  id: string;
+  name: string;
+  price: number;
+}
+
 interface CartItem {
   id: string;
   productId: string;
@@ -29,6 +35,7 @@ interface CartItem {
   image: string;
   quantity: number;
   additionals: Additional[];
+  size?: ProductSize;
   notes?: string;
   totalPrice: number;
 }
@@ -290,6 +297,11 @@ export default function OrderSummary({
                 <h4 className="font-medium text-gray-800 text-sm">
                   {item.name}
                 </h4>
+                {item.size && (
+                  <p className="text-xs text-gray-600">
+                    Tamanho: {item.size.name}
+                  </p>
+                )}
                 {item.additionals.length > 0 && (
                   <p className="text-xs text-gray-600">
                     + {item.additionals.map((add) => add.name).join(", ")}

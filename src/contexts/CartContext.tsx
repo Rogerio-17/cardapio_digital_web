@@ -9,6 +9,12 @@ interface Additional {
   description?: string;
 }
 
+interface ProductSize {
+  id: string;
+  name: string;
+  price: number;
+}
+
 interface CartItem {
   id: string;
   productId: string;
@@ -17,6 +23,7 @@ interface CartItem {
   image: string;
   quantity: number;
   additionals: Additional[];
+  size?: ProductSize;
   notes?: string;
   totalPrice: number;
 }
@@ -78,13 +85,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setItems((prevItems) =>
       prevItems.map((item) => {
         if (item.id === itemId) {
-          const basePrice =
-            item.price +
-            item.additionals.reduce((sum, add) => sum + add.price, 0);
+          const basePrice = item.size?.price || item.price;
+          const additionalsPrice = item.additionals.reduce(
+            (sum, add) => sum + add.price,
+            0
+          );
           return {
             ...item,
             quantity,
-            totalPrice: basePrice * quantity,
+            totalPrice: (basePrice + additionalsPrice) * quantity,
           };
         }
         return item;

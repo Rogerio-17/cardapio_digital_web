@@ -13,6 +13,12 @@ interface Additional {
   description?: string;
 }
 
+interface ProductSize {
+  id: string;
+  name: string;
+  price: number;
+}
+
 interface Product {
   id: string;
   name: string;
@@ -21,6 +27,7 @@ interface Product {
   image: string;
   categoryId: string;
   additionals?: Additional[];
+  sizes?: ProductSize[];
 }
 
 interface ProductDetailClientProps {
@@ -36,6 +43,7 @@ export default function ProductDetailClient({
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [selectedAdditionals, setSelectedAdditionals] = useState<string[]>([]);
+  const [selectedSize, setSelectedSize] = useState<string>("");
   const [notes, setNotes] = useState("");
 
   // Dados exemplo - posteriormente serão carregados dinamicamente
@@ -48,6 +56,23 @@ export default function ProductDetailClient({
     image:
       "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600&h=400&fit=crop",
     categoryId: "1",
+    sizes: [
+      {
+        id: "p",
+        name: "P",
+        price: 24.0,
+      },
+      {
+        id: "m",
+        name: "M",
+        price: 32.0,
+      },
+      {
+        id: "g",
+        name: "G",
+        price: 48.0,
+      },
+    ],
     additionals: [
       {
         id: "1",
@@ -81,6 +106,13 @@ export default function ProductDetailClient({
       },
     ],
   };
+
+  // Definir tamanho padrão quando há tamanhos disponíveis
+  useEffect(() => {
+    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+      setSelectedSize(product.sizes[0].id);
+    }
+  }, [product.sizes, selectedSize]);
 
   // Produtos relacionados exemplo
   const relatedProducts = [
@@ -127,7 +159,12 @@ export default function ProductDetailClient({
       0
     );
 
-    return (product.price + additionalsPrice) * quantity;
+    const basePrice = selectedSize
+      ? product.sizes?.find((size) => size.id === selectedSize)?.price ||
+        product.price
+      : product.price;
+
+    return (basePrice + additionalsPrice) * quantity;
   };
 
   const toggleAdditional = (additionalId: string) => {
@@ -144,6 +181,10 @@ export default function ProductDetailClient({
         selectedAdditionals.includes(add.id)
       ) || [];
 
+    const selectedSizeData = selectedSize
+      ? product.sizes?.find((size) => size.id === selectedSize)
+      : undefined;
+
     addItem({
       productId: product.id,
       name: product.name,
@@ -151,6 +192,7 @@ export default function ProductDetailClient({
       image: product.image,
       quantity,
       additionals: selectedAdditionalsData,
+      size: selectedSizeData,
       notes: notes.trim() || undefined,
       totalPrice: calculateTotalPrice(),
     });
@@ -194,9 +236,43 @@ export default function ProductDetailClient({
           </h1>
           <p className="text-gray-600 leading-relaxed">{product.description}</p>
           <p className="text-3xl font-bold text-green-600 mt-4">
-            R$ {product.price.toFixed(2).replace(".", ",")}
+            R${" "}
+            {(selectedSize
+              ? product.sizes?.find((size) => size.id === selectedSize)
+                  ?.price || product.price
+              : product.price
+            )
+              .toFixed(2)
+              .replace(".", ",")}
           </p>
         </div>
+
+        {/* Tamanhos */}
+        {product.sizes && product.sizes.length > 0 && (
+          <div className="bg-white rounded-lg p-4 shadow-sm">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+              Tamanho
+            </h2>
+            <div className="grid grid-cols-3 gap-3">
+              {product.sizes.map((size) => (
+                <button
+                  key={size.id}
+                  onClick={() => setSelectedSize(size.id)}
+                  className={`p-3 rounded-lg border-2 transition-all text-center ${
+                    selectedSize === size.id
+                      ? "border-orange-500 bg-orange-50 text-orange-700"
+                      : "border-gray-300 hover:border-orange-300 text-gray-700"
+                  }`}
+                >
+                  <div className="font-semibold text-lg">{size.name}</div>
+                  <div className="text-sm font-medium text-gray-600 mt-1">
+                    R$ {size.price.toFixed(2).replace(".", ",")}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Adicionais */}
         {product.additionals && product.additionals.length > 0 && (

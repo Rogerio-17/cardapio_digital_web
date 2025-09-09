@@ -116,6 +116,13 @@ export default function FloatingCart() {
                       {item.name}
                     </h4>
 
+                    {/* Tamanho */}
+                    {item.size && (
+                      <p className="text-xs text-gray-600">
+                        Tamanho: {item.size.name}
+                      </p>
+                    )}
+
                     {/* Adicionais */}
                     {item.additionals.length > 0 && (
                       <p className="text-xs text-gray-600 truncate">
