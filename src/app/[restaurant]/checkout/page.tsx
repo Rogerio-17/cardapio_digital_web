@@ -34,8 +34,7 @@ interface Address {
   neighborhood: string;
   city: string;
   zipCode: string;
-  latitude?: number;
-  longitude?: number;
+  state: string;
 }
 
 interface DeliveryInfo {

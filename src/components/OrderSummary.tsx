@@ -45,8 +45,7 @@ interface Address {
   neighborhood: string;
   city: string;
   zipCode: string;
-  latitude?: number;
-  longitude?: number;
+  state: string;
 }
 
 interface DeliveryInfo {
@@ -98,7 +97,7 @@ export default function OrderSummary({
               }`
             : "Endereço não informado",
           subtitle: deliveryInfo.address
-            ? `${deliveryInfo.address.neighborhood}, ${deliveryInfo.address.city}`
+            ? `${deliveryInfo.address.neighborhood}, ${deliveryInfo.address.city}/${deliveryInfo.address.state}`
             : "",
         };
       case "pickup":
