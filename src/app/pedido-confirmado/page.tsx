@@ -1,20 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle, Clock, Home } from "lucide-react";
+import { CheckCircle, Clock, MenuSquare } from "lucide-react";
 
 export default function OrderConfirmedPage() {
   const router = useRouter();
-
-  useEffect(() => {
-    // Redirecionar para a página inicial após 10 segundos
-    const timer = setTimeout(() => {
-      router.push("/");
-    }, 10000);
-
-    return () => clearTimeout(timer);
-  }, [router]);
+  const restaurantSlug = "test";
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -64,19 +55,16 @@ export default function OrderConfirmedPage() {
             </ul>
           </div>
 
-          {/* Botões */}
+          {/* Botão */}
           <div className="space-y-3">
             <button
-              onClick={() => router.push("/")}
+              onClick={() => router.push(`/${restaurantSlug}`)}
               className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center space-x-2"
             >
-              <Home size={20} />
-              <span>Voltar ao Início</span>
+              {/* Ícone de cardápio do lucide-react */}
+              <MenuSquare size={20} />
+              <span>Voltar ao cardápio</span>
             </button>
-
-            <p className="text-xs text-gray-500">
-              Você será redirecionado automaticamente em 10 segundos
-            </p>
           </div>
         </div>
       </div>

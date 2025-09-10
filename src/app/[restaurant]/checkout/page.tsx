@@ -53,6 +53,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { items, getTotalPrice, clearCart } = useCart();
   const [currentStep, setCurrentStep] = useState(1);
+  const [isFinishingOrder, setIsFinishingOrder] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
     name: "",
     phone: "",
@@ -76,12 +77,12 @@ export default function CheckoutPage() {
     }
   }, []);
 
-  // Verificar se o carrinho está vazio e redirecionar
+  // Verificar se o carrinho está vazio e redirecionar (mas não durante o processo de finalização)
   useEffect(() => {
-    if (items.length === 0) {
+    if (items.length === 0 && !isFinishingOrder) {
       router.back();
     }
-  }, [items, router]);
+  }, [items, router, isFinishingOrder]);
 
   const totalPrice = getTotalPrice();
 
@@ -98,6 +99,9 @@ export default function CheckoutPage() {
   };
 
   const handleFinishOrder = () => {
+    // Marcar que estamos finalizando o pedido para evitar redirecionamento indevido
+    setIsFinishingOrder(true);
+
     // Aqui você implementaria a lógica para enviar o pedido
     console.log("Pedido finalizado:", {
       customerInfo,
@@ -108,11 +112,18 @@ export default function CheckoutPage() {
       estimatedTime,
     });
 
-    // Limpar carrinho
-    clearCart();
+    console.log("🚀 Iniciando redirecionamento para confirmação...");
 
-    // Redirecionar para página de confirmação
-    router.push("/pedido-confirmado");
+    const redirectUrl = `/pedido-confirmado?payment=${paymentInfo.method}`;
+    console.log("🔄 Redirecionando para:", redirectUrl);
+
+    // Redirecionar primeiro, depois limpar o carrinho
+    router.replace(redirectUrl);
+
+    // Limpar carrinho após um pequeno delay para garantir que o redirecionamento aconteça
+    setTimeout(() => {
+      clearCart();
+    }, 100);
   };
 
   const canProceed = () => {

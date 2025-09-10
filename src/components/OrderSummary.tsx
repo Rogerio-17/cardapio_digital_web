@@ -158,7 +158,7 @@ export default function OrderSummary({
         return {
           icon: CreditCardIcon,
           title: "Cartão",
-          description: "Débito ou crédito",
+          description: "Pagamento na maquininha do estabelecimento",
         };
       default:
         return {

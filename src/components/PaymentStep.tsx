@@ -53,8 +53,13 @@ export default function PaymentStep({
       id: "card" as const,
       icon: CreditCardIcon,
       title: "Cartão",
-      description: "Cartão de débito ou crédito",
-      available: deliveryType !== "delivery", // Não disponível para entrega
+      description:
+        deliveryType === "delivery"
+          ? "Cartão na maquininha do estabelecimento (na entrega)"
+          : deliveryType === "pickup"
+          ? "Cartão na maquininha do estabelecimento (na retirada)"
+          : "Cartão na maquininha do estabelecimento",
+      available: true, // Disponível para todas as opções
     },
   ];
 
@@ -255,13 +260,23 @@ export default function PaymentStep({
         <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
           <div className="flex items-center space-x-2 mb-2">
             <CreditCardIcon size={20} className="text-purple-600" />
-            <h3 className="font-semibold text-purple-800">Cartão</h3>
+            <h3 className="font-semibold text-purple-800">
+              Cartão de Débito ou Crédito
+            </h3>
           </div>
           <p className="text-sm text-purple-700">
-            {deliveryType === "pickup"
-              ? "Pagamento com cartão será processado na retirada do pedido."
-              : "Pagamento com cartão será processado no restaurante."}
+            {deliveryType === "delivery"
+              ? "O pagamento será processado na maquininha do estabelecimento no momento da entrega. Tenha seu cartão em mãos quando o entregador chegar."
+              : deliveryType === "pickup"
+              ? "O pagamento será processado na maquininha do estabelecimento no momento da retirada do pedido."
+              : "O pagamento será processado na maquininha do estabelecimento quando você for pagar a conta."}
           </p>
+          <div className="mt-3 p-3 bg-white rounded-md border border-purple-200">
+            <p className="text-xs text-purple-800 font-medium">
+              ⚠️ Importante: Aceitos cartões de débito e crédito das principais
+              bandeiras
+            </p>
+          </div>
         </div>
       )}
     </div>
