@@ -12,12 +12,12 @@ interface ImageUploadProps {
   className?: string;
 }
 
-export default function ImageUpload({ 
-  label, 
-  type, 
-  onImageChange, 
-  preview, 
-  className = "" 
+export default function ImageUpload({
+  label,
+  type,
+  onImageChange,
+  preview,
+  className = "",
 }: ImageUploadProps) {
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -50,7 +50,7 @@ export default function ImageUpload({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
-    
+
     const file = e.dataTransfer.files[0];
     if (file) {
       handleFileChange(file);
@@ -85,7 +85,7 @@ export default function ImageUpload({
           <Camera className="inline w-4 h-4 mr-1" />
           {label}
         </label>
-        
+
         <div className="relative">
           <input
             ref={fileInputRef}
@@ -94,7 +94,7 @@ export default function ImageUpload({
             onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
             className="hidden"
           />
-          
+
           <div
             onClick={openFileDialog}
             onDrop={handleDrop}
@@ -127,8 +127,12 @@ export default function ImageUpload({
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-gray-500">
                 <Upload className="w-12 h-12 mb-4" />
-                <p className="text-sm font-medium">Clique ou arraste uma imagem aqui</p>
-                <p className="text-xs mt-1">PNG, JPG até 5MB (1200x400px recomendado)</p>
+                <p className="text-sm font-medium">
+                  Clique ou arraste uma imagem aqui
+                </p>
+                <p className="text-xs mt-1">
+                  PNG, JPG até 5MB (1200x400px recomendado)
+                </p>
               </div>
             )}
           </div>
@@ -144,7 +148,7 @@ export default function ImageUpload({
         <Camera className="inline w-4 h-4 mr-1" />
         {label}
       </label>
-      
+
       <div className="flex justify-center">
         <div className="relative">
           <input
@@ -154,7 +158,7 @@ export default function ImageUpload({
             onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
             className="hidden"
           />
-          
+
           <div
             onClick={openFileDialog}
             onDrop={handleDrop}
@@ -187,7 +191,11 @@ export default function ImageUpload({
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-gray-500">
                 <Upload className="w-8 h-8 mb-2" />
-                <span className="text-xs text-center">Logo<br />200x200px</span>
+                <span className="text-xs text-center">
+                  Logo
+                  <br />
+                  200x200px
+                </span>
               </div>
             )}
           </div>

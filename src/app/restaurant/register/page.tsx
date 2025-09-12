@@ -128,7 +128,7 @@ export default function RestaurantRegister() {
                   value={formData.name}
                   onChange={(e) => updateName(e.target.value)}
                   placeholder="Ex: Pizzaria do João"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
               </div>
 
@@ -141,7 +141,7 @@ export default function RestaurantRegister() {
                   value={formData.slug}
                   onChange={(e) => updateField("slug", e.target.value)}
                   placeholder="pizzaria-do-joao"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
                 <p className="text-sm text-gray-500 mt-1">
                   Será usado na URL: cardapio.com/
@@ -159,7 +159,7 @@ export default function RestaurantRegister() {
                   onChange={(e) => updateField("description", e.target.value)}
                   placeholder="Descreva seu restaurante, especialidades, diferenciais..."
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
               </div>
 
@@ -170,7 +170,7 @@ export default function RestaurantRegister() {
                 <select
                   value={formData.cuisine}
                   onChange={(e) => updateField("cuisine", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 >
                   <option value="">Selecione o tipo de culinária</option>
                   {cuisineTypes.map((cuisine) => (
@@ -208,7 +208,7 @@ export default function RestaurantRegister() {
                     value={formData.email}
                     onChange={(e) => updateField("email", e.target.value)}
                     placeholder="contato@restaurante.com"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                 </div>
 
@@ -222,14 +222,14 @@ export default function RestaurantRegister() {
                     value={formData.phone}
                     onChange={(e) => updateField("phone", e.target.value)}
                     placeholder="(11) 99999-9999"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                 </div>
               </div>
 
               <div className="space-y-4">
                 <div className="flex items-center">
-                  <MapPin className="w-5 h-5 text-purple-600 mr-2" />
+                  <MapPin className="w-5 h-5 text-orange-600 mr-2" />
                   <span className="font-medium text-gray-700">Endereço</span>
                 </div>
 
@@ -240,7 +240,7 @@ export default function RestaurantRegister() {
                       value={formData.street}
                       onChange={(e) => updateField("street", e.target.value)}
                       placeholder="Rua/Avenida"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     />
                   </div>
                   <div>
@@ -249,7 +249,7 @@ export default function RestaurantRegister() {
                       value={formData.number}
                       onChange={(e) => updateField("number", e.target.value)}
                       placeholder="Número"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -262,14 +262,14 @@ export default function RestaurantRegister() {
                       updateField("neighborhood", e.target.value)
                     }
                     placeholder="Bairro"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                   <input
                     type="text"
                     value={formData.complement}
                     onChange={(e) => updateField("complement", e.target.value)}
                     placeholder="Complemento (opcional)"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                 </div>
 
@@ -279,21 +279,21 @@ export default function RestaurantRegister() {
                     value={formData.city}
                     onChange={(e) => updateField("city", e.target.value)}
                     placeholder="Cidade"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                   <input
                     type="text"
                     value={formData.state}
                     onChange={(e) => updateField("state", e.target.value)}
                     placeholder="Estado"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                   <input
                     type="text"
                     value={formData.zipCode}
                     onChange={(e) => updateField("zipCode", e.target.value)}
                     placeholder="CEP"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -315,7 +315,7 @@ export default function RestaurantRegister() {
 
             <div className="space-y-4">
               <div className="flex items-center mb-4">
-                <Clock className="w-5 h-5 text-purple-600 mr-2" />
+                <Clock className="w-5 h-5 text-orange-600 mr-2" />
                 <span className="font-medium text-gray-700">
                   Horários de Funcionamento
                 </span>
@@ -420,7 +420,7 @@ export default function RestaurantRegister() {
             <div className="space-y-6">
               <div className="space-y-4">
                 <div className="flex items-center">
-                  <DollarSign className="w-5 h-5 text-purple-600 mr-2" />
+                  <DollarSign className="w-5 h-5 text-orange-600 mr-2" />
                   <span className="font-medium text-gray-700">
                     Configurações de Entrega
                   </span>
@@ -439,7 +439,7 @@ export default function RestaurantRegister() {
                         updateField("deliveryFee", e.target.value)
                       }
                       placeholder="5.00"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     />
                   </div>
 
@@ -455,7 +455,7 @@ export default function RestaurantRegister() {
                         updateField("minimumOrder", e.target.value)
                       }
                       placeholder="25.00"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -476,7 +476,7 @@ export default function RestaurantRegister() {
                           )
                         }
                         placeholder="30"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                       />
                       <span className="text-sm text-gray-500">Mínimo</span>
                     </div>
@@ -491,7 +491,7 @@ export default function RestaurantRegister() {
                           )
                         }
                         placeholder="45"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                       />
                       <span className="text-sm text-gray-500">Máximo</span>
                     </div>
@@ -501,7 +501,7 @@ export default function RestaurantRegister() {
 
               <div className="space-y-4">
                 <div className="flex items-center">
-                  <CreditCard className="w-5 h-5 text-purple-600 mr-2" />
+                  <CreditCard className="w-5 h-5 text-orange-600 mr-2" />
                   <span className="font-medium text-gray-700">
                     Formas de Pagamento
                   </span>
@@ -552,7 +552,7 @@ export default function RestaurantRegister() {
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                     i + 1 <= currentStep
-                      ? "bg-purple-600 text-white"
+                      ? "bg-orange-600 text-white"
                       : "bg-gray-200 text-gray-600"
                   }`}
                 >
@@ -561,7 +561,7 @@ export default function RestaurantRegister() {
                 {i < totalSteps - 1 && (
                   <div
                     className={`flex-1 h-1 mx-2 ${
-                      i + 1 < currentStep ? "bg-purple-600" : "bg-gray-200"
+                      i + 1 < currentStep ? "bg-orange-600" : "bg-gray-200"
                     }`}
                   />
                 )}
@@ -593,7 +593,7 @@ export default function RestaurantRegister() {
           {currentStep < totalSteps ? (
             <button
               onClick={handleNextStep}
-              className="px-6 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700"
+              className="px-6 py-2 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700"
             >
               Próximo
             </button>
