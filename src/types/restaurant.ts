@@ -67,3 +67,79 @@ export interface RestaurantFormData {
     sunday: { open: string; close: string; isOpen: boolean };
   };
 }
+
+// Order types
+export enum OrderStatus {
+  RECEIVED = "RECEIVED", // Pedido recebido
+  CONFIRMED = "CONFIRMED", // Confirmado pelo restaurante
+  PREPARING = "PREPARING", // Em preparo
+  READY = "READY", // Pronto para entrega/retirada
+  OUT_FOR_DELIVERY = "OUT_FOR_DELIVERY", // Saiu para entrega
+  DELIVERED = "DELIVERED", // Entregue
+  CANCELLED = "CANCELLED", // Cancelado
+}
+
+export enum DeliveryType {
+  DELIVERY = "DELIVERY",
+  PICKUP = "PICKUP",
+}
+
+export enum PaymentMethod {
+  CASH = "CASH",
+  CREDIT_CARD = "CREDIT_CARD",
+  DEBIT_CARD = "DEBIT_CARD",
+  PIX = "PIX",
+}
+
+export interface OrderItem {
+  id: string;
+  productId: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+  notes?: string;
+  additionals: {
+    id: string;
+    name: string;
+    price: number;
+  }[];
+  size?: {
+    id: string;
+    name: string;
+    price: number;
+  };
+  totalPrice: number;
+}
+
+export interface Order {
+  id: string;
+  orderNumber: number;
+  restaurantId: string;
+  status: OrderStatus;
+  items: OrderItem[];
+  customer: {
+    name: string;
+    phone: string;
+    email?: string;
+  };
+  deliveryType: DeliveryType;
+  deliveryAddress?: {
+    street: string;
+    number: string;
+    neighborhood: string;
+    city: string;
+    zipCode: string;
+    complement?: string;
+  };
+  paymentMethod: PaymentMethod;
+  subtotal: number;
+  deliveryFee: number;
+  total: number;
+  notes?: string;
+  estimatedDeliveryTime?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  confirmedAt?: Date;
+  deliveredAt?: Date;
+}
