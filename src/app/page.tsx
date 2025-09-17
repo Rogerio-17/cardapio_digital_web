@@ -309,7 +309,7 @@ export default function Home() {
               Em apenas 3 passos você já terá seu cardápio digital funcionando
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             {/* Passo 1 */}
             <div className="text-center">
@@ -320,13 +320,12 @@ export default function Home() {
                 Envie seus dados
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                Nos envie o nome do seu restaurante, cardápio atual e suas informações. 
-                Pode ser por WhatsApp, email ou foto mesmo!
+                Nos envie o nome do seu restaurante, cardápio atual e suas
+                informações. Pode ser por WhatsApp, email ou foto mesmo!
               </p>
               <div className="mt-4 p-4 bg-white rounded-lg shadow-sm border">
                 <div className="flex items-center justify-center text-sm text-gray-500">
-                  <Clock className="w-4 h-4 mr-2" />
-                  5 minutos
+                  <Clock className="w-4 h-4 mr-2" />5 minutos
                 </div>
               </div>
             </div>
@@ -340,7 +339,7 @@ export default function Home() {
                 Criamos tudo para você
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                Nossa equipe monta seu cardápio digital personalizado com fotos, 
+                Nossa equipe monta seu cardápio digital personalizado com fotos,
                 preços e descrições. Tudo organizado e bonito!
               </p>
               <div className="mt-4 p-4 bg-white rounded-lg shadow-sm border">
@@ -360,7 +359,7 @@ export default function Home() {
                 Comece a usar!
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                Receba seu link personalizado e QR Code. Cole nas mesas e 
+                Receba seu link personalizado e QR Code. Cole nas mesas e
                 pronto! Seus clientes já podem acessar o cardápio.
               </p>
               <div className="mt-4 p-4 bg-white rounded-lg shadow-sm border">
@@ -378,7 +377,7 @@ export default function Home() {
               Pronto para modernizar seu restaurante?
             </h3>
             <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
-              Junte-se a mais de 500 restaurantes que já aumentaram suas vendas 
+              Junte-se a mais de 500 restaurantes que já aumentaram suas vendas
               com nosso cardápio digital
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -390,7 +389,9 @@ export default function Home() {
               </button>
               <div className="flex items-center text-purple-100">
                 <Users className="w-5 h-5 mr-2" />
-                <span className="text-sm">500+ restaurantes confiam em nós</span>
+                <span className="text-sm">
+                  500+ restaurantes confiam em nós
+                </span>
               </div>
             </div>
           </div>
